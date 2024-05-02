@@ -1,14 +1,14 @@
 #!/usr/bin/python3
-import requests
-import sys
-
-
 """
 Script to retrieve and display TODO list progress for a given employee ID
 using a REST API.
 
 Usage: python3 script_name.py employee_id
 """
+
+
+import requests
+import sys
 
 
 if __name__ == "__main__":
