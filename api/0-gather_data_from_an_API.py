@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 import requests
 import sys
+"""
+Script to retrieve and display TODO list progress for a given employee ID
+using a REST API.
+"""
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
