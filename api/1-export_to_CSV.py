@@ -4,18 +4,21 @@ Script to retrieve and export TODO list progress for a given employee ID
 using a REST API.
 """
 
-import json
+import csv
 import requests
 import sys
 
 
-def export_list(employee_id):
-    """
-    Retrieve TODO list progress for a given employee.
-    """
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"UsageError: python3 {__file__} employee_id(int)")
+        sys.exit(1)
+
     API_URL = "https://jsonplaceholder.typicode.com"
+    EMPLOYEE_ID = sys.argv[1]
+
     response = requests.get(
-        f"{API_URL}/users/{employee_id}/todos",
+        f"{API_URL}/users/{EMPLOYEE_ID}/todos",
         params={"_expand": "user"}
     )
     data = response.json()
@@ -24,25 +27,11 @@ def export_list(employee_id):
         print("RequestError:", 404)
         sys.exit(1)
 
-    employee_name = data[0]["user"]["name"]
-    tasks = []
-    for task in data:
-        tasks.append({
-            "task": task["title"],
-            "completed": task["completed"],
-            "username": employee_name
-        })
+    username = data[0]["user"]["username"]
 
-    json_data = {employee_id: tasks}
-
-    with open(f"{employee_id}.json", "w") as json_file:
-        json.dump(json_data, json_file)
-
-
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"UsageError: python3 {__file__} employee_id(int)")
-        sys.exit(1)
-
-    employee_id = int(sys.argv[1])
-    export_list(employee_id)
+    with open(f"{EMPLOYEE_ID}.csv", "w", newline="") as file:
+        writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC)
+        for task in data:
+            writer.writerow(
+                [EMPLOYEE_ID, username, str(task["completed"]), task["title"]]
+            )
